@@ -1,0 +1,27 @@
+# Shared configuration for all services
+
+# Shared Keycloak settings for all services
+keycloak-url: http://localhost:8080/realms/parking-lot-realm
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # All services use this to verify the digital signature of the tokens
+          issuer-uri: ${keycloak-url}
+          jwk-set-uri: ${keycloak-url}/protocol/openid-connect/certs
+
+  # Shared Kafka settings for all services
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: parking-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"

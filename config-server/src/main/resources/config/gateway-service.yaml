@@ -1,0 +1,32 @@
+server:
+  port: 8000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        # Route for the React App to talk to the BFF
+        - id: bff-route
+          uri: lb://bff-service
+          predicates:
+            - Path=/api/parking/**
+
+        # Route for Admin tasks or direct Ticket access
+        - id: ticket-service-route
+          uri: lb://ticket-service
+          predicates:
+            - Path=/api/tickets/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: ticketServiceCircuitBreaker
+                fallbackUri: forward:/fallback/ticket-service
+
+# Resilience4j default settings
+resilience4j:
+  circuitbreaker:
+    instances:
+      ticketServiceCircuitBreaker:
+        slidingWindowSize: 10
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000

@@ -1,0 +1,26 @@
+package com.parking.ticketservice.service.strategy;
+
+import com.parking.ticketservice.domain.VehicleType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.stereotype.Component;
+
+@Component
+@RefreshScope
+public class CarPricingStrategy implements PricingStrategy {
+
+    // Note the path matches your new YAML structure
+    @Value("${parking.hourlyRates.car:5.0}")
+    private double carRate;
+
+    @Override
+    public VehicleType getVehicleType() {
+        return VehicleType.CAR;
+    }
+
+    @Override
+    public double calculatePrice(long hours) {
+        return hours * carRate;
+    }
+}
+
