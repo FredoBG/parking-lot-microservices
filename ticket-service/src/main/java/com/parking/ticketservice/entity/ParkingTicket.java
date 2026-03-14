@@ -1,24 +1,25 @@
 package com.parking.ticketservice.entity;
 
+import com.parking.ticketservice.domain.TicketStatus;
 import com.parking.ticketservice.domain.VehicleType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Getter
+@Table(name = "parking_tickets")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class ParkingTicket {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue // Hibernate will handle the UUID generation
+    @Column(updatable = false, nullable = false)
+    private UUID id;
 
     private String licensePlate;
     private LocalDateTime entryTime;

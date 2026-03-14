@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/tickets")
@@ -17,7 +20,7 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping("/check-in")
-    public ResponseEntity<ParkingTicket> checkIn(@RequestBody TicketRequestDTO request) {
+    public ResponseEntity<ParkingTicket> checkIn(@Valid @RequestBody TicketRequestDTO request) {
         // We convert the String from JSON into our VehicleType Enum
         VehicleType type = VehicleType.valueOf(request.getType().toUpperCase());
 
@@ -26,7 +29,7 @@ public class TicketController {
     }
 
     @PostMapping("/{id}/check-out")
-    public ResponseEntity<ParkingTicket> checkOut(@PathVariable Long id) {
+    public ResponseEntity<ParkingTicket> checkOut(@PathVariable UUID id) {
         ParkingTicket ticket = ticketService.checkOut(id);
         return ResponseEntity.ok(ticket);
     }

@@ -1,4 +1,4 @@
-package com.parking.ticketservice.entity;
+package com.parking.ticketservice.domain;
 
 public enum TicketStatus {
     OPEN,    // Vehicle is currently in the parking lot
