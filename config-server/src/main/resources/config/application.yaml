@@ -12,6 +12,11 @@ spring:
           issuer-uri: ${keycloak-url}
           jwk-set-uri: ${keycloak-url}/protocol/openid-connect/certs
 
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/eureka/
+
   # Shared Kafka settings for all services
   kafka:
     bootstrap-servers: localhost:9092

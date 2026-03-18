@@ -33,3 +33,20 @@ parking:
     car: 5.0
     motorcycle: 2.0
     truck: 8.0
+
+resilience4j:
+  retry:
+    instances:
+      kafkaProducer:
+        maxAttempts: 3
+        waitDuration: 2s # Wait 2 seconds between tries
+        retryExceptions:
+          - org.apache.kafka.common.errors.TimeoutException
+          - org.springframework.kafka.KafkaException
+  circuitbreaker:
+    instances:
+      kafkaProducer:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        failureRateThreshold: 50 # If 50% of calls fail, "Open" the circuit (stop trying)
+        waitDurationInOpenState: 10s

@@ -11,22 +11,23 @@ spring:
           predicates:
             - Path=/api/parking/**
 
-        # Route for Admin tasks or direct Ticket access
+        # Route for direct Ticket access with Resilience
         - id: ticket-service-route
           uri: lb://ticket-service
           predicates:
-            - Path=/api/tickets/**
+            - Path=/api/v1/tickets/** # Match the actual controller path
           filters:
             - name: CircuitBreaker
               args:
                 name: ticketServiceCircuitBreaker
+                # This must point to a controller inside the Gateway project
                 fallbackUri: forward:/fallback/ticket-service
 
-# Resilience4j default settings
+# Resilience4j Tuning
 resilience4j:
   circuitbreaker:
     instances:
       ticketServiceCircuitBreaker:
-        slidingWindowSize: 10
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10000
+        slidingWindowSize: 10          # Check the last 10 requests
+        failureRateThreshold: 50       # If 5 out of 10 fail, open the circuit
+        waitDurationInOpenState: 10s   # Wait 10s before trying again
