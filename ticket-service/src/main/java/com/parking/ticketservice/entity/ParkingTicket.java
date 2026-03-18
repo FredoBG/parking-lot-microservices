@@ -1,7 +1,7 @@
 package com.parking.ticketservice.entity;
 
-import com.parking.ticketservice.domain.TicketStatus;
-import com.parking.ticketservice.domain.VehicleType;
+import com.parking.common.domain.TicketStatus;
+import com.parking.common.domain.VehicleType;
 import jakarta.persistence.*;
 import lombok.*;
 

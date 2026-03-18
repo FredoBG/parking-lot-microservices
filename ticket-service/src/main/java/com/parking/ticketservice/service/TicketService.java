@@ -1,9 +1,9 @@
 package com.parking.ticketservice.service;
 
-import com.parking.ticketservice.dto.ParkingEvent;
-import com.parking.ticketservice.domain.VehicleType;       // Domain folder
-import com.parking.ticketservice.domain.TicketStatus;      // Moved to Domain folder
-import com.parking.ticketservice.domain.ParkingActionType; // New Domain Enum
+import com.parking.common.domain.ParkingActionType;
+import com.parking.common.domain.TicketStatus;
+import com.parking.common.domain.VehicleType;
+import com.parking.common.dto.ParkingEvent;
 import com.parking.ticketservice.entity.ParkingTicket;
 import com.parking.ticketservice.exception.TicketAlreadyClosedOrPaidException;
 import com.parking.ticketservice.exception.TicketNotFoundException;

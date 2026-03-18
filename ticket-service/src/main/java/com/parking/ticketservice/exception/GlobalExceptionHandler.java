@@ -1,6 +1,7 @@
 package com.parking.ticketservice.exception;
 
-import com.parking.ticketservice.dto.ParkingErrorResponse; // No more confusion!
+import com.parking.common.dto.ParkingErrorResponse;
+import com.parking.common.exception.BaseParkingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,6 +11,14 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // This handles TicketNotFound, VehicleAlreadyParked, etc., all at once!
+    @ExceptionHandler(BaseParkingException.class)
+    public ResponseEntity<ParkingErrorResponse> handleParkingExceptions(BaseParkingException ex) {
+        return ResponseEntity.status(ex.getStatusCode())
+                .body(new ParkingErrorResponse(ex.getStatusCode(), ex.getMessage()));
+    }
+
+/*
     @ExceptionHandler(TicketNotFoundException.class)
     public ResponseEntity<ParkingErrorResponse> handleNotFound(TicketNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -27,7 +36,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ParkingErrorResponse(400, ex.getMessage()));
     }
-
+*/
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ParkingErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
         // This gets the dynamic message from our EnumValidator (e.g., "Allowed values are: [CAR, MOTORCYCLE]")

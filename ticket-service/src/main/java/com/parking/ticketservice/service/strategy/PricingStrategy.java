@@ -1,6 +1,6 @@
 package com.parking.ticketservice.service.strategy;
 
-import com.parking.ticketservice.domain.VehicleType;
+import com.parking.common.domain.VehicleType;
 
 public interface PricingStrategy {
     VehicleType getVehicleType();

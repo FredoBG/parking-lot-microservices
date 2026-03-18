@@ -1,4 +1,4 @@
-package com.parking.ticketservice.domain;
+package com.parking.common.domain;
 
 /**
  * Represents the types of events that can occur within the parking system.

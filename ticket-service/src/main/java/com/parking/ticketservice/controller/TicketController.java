@@ -1,8 +1,8 @@
 package com.parking.ticketservice.controller;
 
+import com.parking.common.domain.VehicleType;
 import com.parking.ticketservice.dto.TicketRequestDTO;
 import com.parking.ticketservice.entity.ParkingTicket;
-import com.parking.ticketservice.domain.VehicleType;
 import com.parking.ticketservice.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

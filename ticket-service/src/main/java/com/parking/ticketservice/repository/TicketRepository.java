@@ -1,7 +1,7 @@
 package com.parking.ticketservice.repository;
 
+import com.parking.common.domain.TicketStatus;
 import com.parking.ticketservice.entity.ParkingTicket;
-import com.parking.ticketservice.domain.TicketStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;

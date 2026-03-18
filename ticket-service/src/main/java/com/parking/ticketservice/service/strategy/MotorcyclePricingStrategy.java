@@ -1,6 +1,6 @@
 package com.parking.ticketservice.service.strategy;
 
-import com.parking.ticketservice.domain.VehicleType;
+import com.parking.common.domain.VehicleType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;

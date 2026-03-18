@@ -1,9 +1,9 @@
 package com.parking.ticketservice.dto;
 
+import com.parking.common.domain.VehicleType;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import com.parking.ticketservice.validator.ValidateEnum;
-import com.parking.ticketservice.domain.VehicleType;
 
 @Data
 public class TicketRequestDTO {

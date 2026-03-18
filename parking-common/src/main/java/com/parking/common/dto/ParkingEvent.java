@@ -1,10 +1,13 @@
-package com.parking.ticketservice.dto;
+package com.parking.common.dto;
 
-import lombok.*;
+import com.parking.common.domain.ParkingActionType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import com.parking.ticketservice.domain.ParkingActionType;
 
 @Data
 @Builder

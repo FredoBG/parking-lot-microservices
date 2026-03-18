@@ -1,6 +1,6 @@
 package com.parking.ticketservice.service;
 
-import com.parking.ticketservice.dto.ParkingEvent;
+import com.parking.common.dto.ParkingEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
