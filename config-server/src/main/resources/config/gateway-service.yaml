@@ -4,6 +4,13 @@ server:
 spring:
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 5000  # Time to establish connection
+        response-timeout: 5s   # Time to wait for the data
+      # This tells the gateway to be flexible with case when talking to Eureka
+      discovery:
+        locator:
+          lower-case-service-id: true
       routes:
         # Route for the React App to talk to the BFF
         - id: bff-route
@@ -31,3 +38,7 @@ resilience4j:
         slidingWindowSize: 10          # Check the last 10 requests
         failureRateThreshold: 50       # If 5 out of 10 fail, open the circuit
         waitDurationInOpenState: 10s   # Wait 10s before trying again
+  timelimiter:
+    instances:
+      ticketServiceCircuitBreaker: # Note: This MUST match the name used in the route filter
+        timeoutDuration: 5s       # Gives the Ticket Service 5s to "wake up"

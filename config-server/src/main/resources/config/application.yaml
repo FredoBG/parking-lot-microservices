@@ -12,6 +12,7 @@ spring:
           issuer-uri: ${keycloak-url}
           jwk-set-uri: ${keycloak-url}/protocol/openid-connect/certs
 
+  # Shared DISCOVERY-SERVICE settings for all services
   eureka:
     client:
       service-url:
