@@ -1,2 +1,4 @@
 server:
   port: 8082
+
+# The notification-service find the Gateway via Eureka (shared properties.yaml)

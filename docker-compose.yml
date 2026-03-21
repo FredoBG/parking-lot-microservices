@@ -3,6 +3,10 @@ services:
     image: quay.io/keycloak/keycloak:24.0.0
     container_name: keycloak
     environment:
+      # Use these specific variables to bypass the "Local Access" screen
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      # Keeping these for version compatibility
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
     command: start-dev

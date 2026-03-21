@@ -1,4 +1,4 @@
-package com.fredobg.bff_service;
+package com.parking.bffservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

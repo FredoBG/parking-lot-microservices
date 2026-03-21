@@ -1,0 +1,22 @@
+server:
+  port: 8083
+
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: parking-lot-client
+            client-secret: mIcZVPtPm8WDhT3TnRPzNaqgmxJKtKvM
+            scope: openid, profile, email
+            authorization-grant-type: authorization_code
+            # This is the "Return Address" Keycloak uses after login
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            # The URL of your parking-lot realm
+            issuer-uri: http://localhost:8080/realms/parking-lot
+            user-name-attribute: preferred_username
+
+# The BFF find the Gateway via Eureka (shared properties.yaml)

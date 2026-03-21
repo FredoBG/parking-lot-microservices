@@ -2,6 +2,12 @@ server:
   port: 8000
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # The Gateway downloads the public keys from here to verify Fredo's token
+          jwk-set-uri: http://localhost:8080/realms/parking-lot/protocol/openid-connect/certs
   cloud:
     gateway:
       httpclient:

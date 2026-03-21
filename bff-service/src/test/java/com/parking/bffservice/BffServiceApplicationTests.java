@@ -1,4 +1,4 @@
-package com.fredobg.bff_service;
+package com.parking.bffservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
