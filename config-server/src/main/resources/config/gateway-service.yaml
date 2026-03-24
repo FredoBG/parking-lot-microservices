@@ -6,6 +6,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
+          # ADD THE ISSUER HERE
+          issuer-uri: http://localhost:8080/realms/parking-lot
           # The Gateway downloads the public keys from here to verify Fredo's token
           jwk-set-uri: http://localhost:8080/realms/parking-lot/protocol/openid-connect/certs
   cloud:
@@ -35,6 +37,12 @@ spring:
                 name: ticketServiceCircuitBreaker
                 # This must point to a controller inside the Gateway project
                 fallbackUri: forward:/fallback/ticket-service
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.cloud.gateway: TRACE
+
 
 # Resilience4j Tuning
 resilience4j:

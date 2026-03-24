@@ -2,31 +2,34 @@ package com.parking.bffservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.authentication.RedirectServerAuthenticationEntryPoint;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebFluxSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated()
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+        return http
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(exchange -> exchange
+                        .pathMatchers("/login/**", "/oauth2/**").permitAll() // Allow auth flows
+                        .anyExchange().authenticated()
                 )
-                .oauth2Login(oauth2 -> oauth2
-                        // This forces the "Entry Point" to be Keycloak, bypassing the blue link page
-                        .loginPage("/oauth2/authorization/keycloak")
+                // 1. CHANGE: Use oauth2Login instead of oauth2ResourceServer
+                // This is what triggers the redirect to Keycloak
+                .oauth2Login(Customizer.withDefaults())
+                // 2. ADD THIS: It ensures the token is placed where the Gateway filter can find it
+                .oauth2Client(Customizer.withDefaults())
+                // 3. ADD: This bypasses the "blue link" page and sends
+                // unauthorized users straight to the Keycloak login box
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new RedirectServerAuthenticationEntryPoint("/oauth2/authorization/keycloak"))
                 )
-                // This is the extra "Pro" line to ensure the exception handling points to Keycloak
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/oauth2/authorization/keycloak"))
-                )
-                .logout(logout -> logout.logoutSuccessUrl("/"));
-
-        return http.build();
+                .build();
     }
 }

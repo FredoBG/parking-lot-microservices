@@ -7,6 +7,7 @@ import com.parking.ticketservice.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -32,5 +33,11 @@ public class TicketController {
     public ResponseEntity<ParkingTicket> checkOut(@PathVariable UUID id) {
         ParkingTicket ticket = ticketService.checkOut(id);
         return ResponseEntity.ok(ticket);
+    }
+
+    @GetMapping("/test")
+    @PreAuthorize("hasRole('PARKING_USER')") // Only users with this role can get here
+    public String testSecurity() {
+        return "If you see this, the TokenRelay worked! Hello from Ticket-Service.";
     }
 }

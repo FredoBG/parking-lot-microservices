@@ -2,6 +2,14 @@ server:
   port: 8081
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # The issuer-uri allows the service to discover the public keys
+          # from Keycloak to verify the token signature locally.
+          issuer-uri: http://localhost:8080/realms/parking-lot
+          jwk-set-uri: http://localhost:8080/realms/parking-lot/protocol/openid-connect/certs
   datasource:
     url: jdbc:h2:mem:parkingdb
     driverClassName: org.h2.Driver

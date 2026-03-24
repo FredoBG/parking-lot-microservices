@@ -18,5 +18,21 @@ spring:
             # The URL of your parking-lot realm
             issuer-uri: http://localhost:8080/realms/parking-lot
             user-name-attribute: preferred_username
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
+      routes:
+        - id: resource-router
+          uri: http://localhost:8000
+          predicates:
+            - Path=/api/v1/** # This matches your ticket-service paths
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive.function.client: TRACE
+
 
 # The BFF find the Gateway via Eureka (shared properties.yaml)
