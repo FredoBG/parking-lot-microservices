@@ -8,9 +8,12 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
 @Service
@@ -32,10 +35,19 @@ public class KafkaProducerService {
     public void publishParkingEvent(ParkingEvent event) {
         log.info("📤 Publishing to Kafka Topic [{}]: {}", TOPIC, event.getLicensePlate());
 
-        // Using licensePlate as the key ensures all events for the same car
-        // stay in the same Kafka partition (maintaining order).
-        kafkaTemplate.send(TOPIC, event.getLicensePlate(), event);
+        // 1. Extract the User ID from the Security Context (Zero Trust source)
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        // 2. Create the Record with Topic, Key (License Plate), and the Event
+        ProducerRecord<String, ParkingEvent> record = new ProducerRecord<>(TOPIC, event.getLicensePlate(), event);
+
+        // 3. Add the Identity Header
+        record.headers().add("X-USER-ID", userId.getBytes(StandardCharsets.UTF_8));
+
+        // 4. Send the full record instead of individual parameters
+        kafkaTemplate.send(record);
     }
+
 
     // This method is called ONLY when all retries fail or the circuit is open.
     public void fallbackKafka(ParkingEvent event, Exception e) {

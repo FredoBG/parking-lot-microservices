@@ -21,6 +21,7 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping("/check-in")
+    @PreAuthorize("hasRole('PARKING_USER')") // Only users with this role can get here
     public ResponseEntity<ParkingTicket> checkIn(@Valid @RequestBody TicketRequestDTO request) {
         // We convert the String from JSON into our VehicleType Enum
         VehicleType type = VehicleType.valueOf(request.getType().toUpperCase());
@@ -30,6 +31,7 @@ public class TicketController {
     }
 
     @PostMapping("/{id}/check-out")
+    @PreAuthorize("hasRole('PARKING_USER')") // Only users with this role can get here
     public ResponseEntity<ParkingTicket> checkOut(@PathVariable UUID id) {
         ParkingTicket ticket = ticketService.checkOut(id);
         return ResponseEntity.ok(ticket);

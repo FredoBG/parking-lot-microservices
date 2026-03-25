@@ -18,6 +18,11 @@ spring:
             # The URL of your parking-lot realm
             issuer-uri: http://localhost:8080/realms/parking-lot
             user-name-attribute: preferred_username
+      # ADD THIS SECTION JUST FOR DEVELOPMENT (Bearer token support)
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/parking-lot
+          jwk-set-uri: http://localhost:8080/realms/parking-lot/protocol/openid-connect/certs
   cloud:
     gateway:
       default-filters:

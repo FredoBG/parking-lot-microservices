@@ -3,6 +3,7 @@ package com.parking.notificationservice.service;
 import com.parking.common.dto.ParkingEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Service;
 public class NotificationListener {
 
     @KafkaListener(topics = "parking-events", groupId = "notification-group")
-    public void handleParkingEvent(ParkingEvent event) {
-        log.info("Received event from Kafka: {}", event.getTicketId());
+    public void handleParkingEvent(ParkingEvent event, @Header("X-USER-ID") String userId) {
+        log.info("🔔 Notification for User [{}]: TicketId {} has checked in.", userId, event.getTicketId());
 
         switch (event.getActionType()) {
             case CHECK_IN:

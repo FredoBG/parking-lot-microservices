@@ -25,6 +25,8 @@ public class SecurityConfig {
                 .oauth2Login(Customizer.withDefaults())
                 // 2. ADD THIS: It ensures the token is placed where the Gateway filter can find it
                 .oauth2Client(Customizer.withDefaults())
+                // --- ADD THIS LINE JUST FOR DEVELOPMENT (Bearer token support) ---
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 // 3. ADD: This bypasses the "blue link" page and sends
                 // unauthorized users straight to the Keycloak login box
                 .exceptionHandling(exceptionHandling -> exceptionHandling
