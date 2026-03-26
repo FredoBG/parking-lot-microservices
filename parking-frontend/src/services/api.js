@@ -24,6 +24,6 @@ api.interceptors.response.use(
 );
 
 export default api;
-export const checkIn = (licensePlate) => api.post('/api/v1/tickets/check-in', { licensePlate });
+export const checkIn = (data) => api.post('/api/v1/tickets/check-in', data);
 export const getTestMessage = () => api.get('/api/v1/tickets/test'); // Your new test endpoint
 export const getTickets = () => api.get('/api/v1/tickets/history');

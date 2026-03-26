@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import api from '../services/api';
+// Import the specific function instead of the default api instance
+import { getTestMessage } from '../services/api';
 
 const TestPage = () => {
     const [data, setData] = useState('Verifying connection...');
@@ -13,9 +14,11 @@ const TestPage = () => {
 
         const fetchData = async () => {
             try {
-                const response = await api.get('/api/v1/tickets/test');
+                // Now using the centralized function from api.js
+                const response = await getTestMessage();
                 setData(response.data);
             } catch (err) {
+                // This will trigger if bff-service or ticket-service is down
                 setData("Connection failed. Check your microservices.");
             } finally {
                 setLoading(false);

@@ -24,7 +24,11 @@ public class SecurityConfig {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Add this line for REACT localhost testing!
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                // ADD THIS: Allow frames for H2 Console
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeExchange(exchange -> exchange
+                        // ADD THIS: Permit all to H2 console paths
+                        .pathMatchers("/h2-console/**").permitAll()
                         .pathMatchers("/login/**", "/oauth2/**").permitAll() // Allow auth flows
                         .anyExchange().authenticated()
                 )

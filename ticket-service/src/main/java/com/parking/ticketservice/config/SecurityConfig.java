@@ -24,16 +24,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().authenticated() // No "soft center": every endpoint requires a token
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults())
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                )
-                .csrf(csrf -> csrf.disable()); // Standard for stateless REST APIs
+            // 1. Allow frames for the H2 Console UI to render
+            .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+            .authorizeHttpRequests(authorize -> authorize
+                // 2. Permit all access to H2 console paths
+                .requestMatchers("/h2-console/**").permitAll()
+                .anyRequest().authenticated() // No "soft center": every endpoint requires a token
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(Customizer.withDefaults())
+            )
+            .oauth2ResourceServer(oauth2 -> oauth2
+                    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+            )
+            // 3. Disable CSRF for the console so you can log in without a token
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**").disable());
 
         return http.build();
     }

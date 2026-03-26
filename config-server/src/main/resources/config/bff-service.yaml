@@ -8,7 +8,7 @@ spring:
         registration:
           keycloak:
             client-id: parking-lot-client
-            client-secret: mIcZVPtPm8WDhT3TnRPzNaqgmxJKtKvM
+            client-secret: Yn1LstkIp4Inb2kenvOF8bN7369GZpR8
             scope: openid, profile, email
             authorization-grant-type: authorization_code
             # This is the "Return Address" Keycloak uses after login
