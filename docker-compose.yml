@@ -12,6 +12,9 @@ services:
     command: start-dev
     ports:
       - "8080:8080"
+    volumes:
+      - ./parking-lot-realm.json:/opt/keycloak/data/import/realm.json:ro
+    command: start-dev --import-realm
 
   kafka:
     image: apache/kafka:latest

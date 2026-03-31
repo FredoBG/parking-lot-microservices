@@ -11,33 +11,27 @@ spring:
             client-secret: Yn1LstkIp4Inb2kenvOF8bN7369GZpR8
             scope: openid, profile, email
             authorization-grant-type: authorization_code
-            # This is the "Return Address" Keycloak uses after login
             redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
         provider:
           keycloak:
-            # The URL of your parking-lot realm
             issuer-uri: http://localhost:8080/realms/parking-lot
             user-name-attribute: preferred_username
-      # ADD THIS SECTION JUST FOR DEVELOPMENT (Bearer token support)
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/parking-lot
-          jwk-set-uri: http://localhost:8080/realms/parking-lot/protocol/openid-connect/certs
+
   cloud:
     gateway:
       default-filters:
         - TokenRelay
       routes:
-        - id: resource-router
+        - id: ticket-service-route
           uri: http://localhost:8000
           predicates:
-            - Path=/api/v1/** # This matches your ticket-service paths
+            - Path=/api/v1/**
+        - id: vite-frontend
+          uri: http://localhost:5173
+          predicates:
+            - Path=/**
 
 logging:
   level:
     org.springframework.cloud.gateway: TRACE
     org.springframework.http.server.reactive: DEBUG
-    org.springframework.web.reactive.function.client: TRACE
-
-
-# The BFF find the Gateway via Eureka (shared properties.yaml)

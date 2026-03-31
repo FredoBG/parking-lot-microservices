@@ -1,97 +1,124 @@
-import React, { useState } from 'react';
-import { checkIn } from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { checkIn, getVehicleTypes } from '../services/api';
 
 const CheckInPage = () => {
-    const [formData, setFormData] = useState({
-        licensePlate: '',
-        type: 'CAR' // Default matching your VehicleType Enum
-    });
-    const [status, setStatus] = useState({ type: '', message: '' });
-    const [loading, setLoading] = useState(false); // New state for the animation
+  const [formData, setFormData] = useState({
+    plate: '', // We keep 'plate' for the input field state
+    vehicleType: ''
+  });
+  const [vehicleTypes, setVehicleTypes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true); // Start animation
-        setStatus({ type: '', message: '' });
-
-        try {
-            const response = await checkIn(formData);
-            setStatus({
-                type: 'success',
-                message: `Ticket ${response.data.id} created successfully!`
-            });
-            setFormData({ licensePlate: '', type: 'CAR' });
-        } catch (err) {
-            setStatus({
-                type: 'error',
-                message: err.response?.data?.message || "Server error. Check backend logs."
-            });
-        } finally {
-            setLoading(false); // Stop animation regardless of success/fail
+  useEffect(() => {
+    const fetchTypes = async () => {
+      try {
+        const response = await getVehicleTypes();
+        setVehicleTypes(response.data);
+        if (response.data.length > 0) {
+          setFormData(prev => ({ ...prev, vehicleType: response.data[0] }));
         }
+      } catch (err) {
+        console.error("Could not fetch vehicle types:", err);
+        setError("Failed to load vehicle types.");
+      }
     };
+    fetchTypes();
+  }, []);
 
-    return (
-        <div className="max-w-md mx-auto p-8 bg-white shadow-xl rounded-2xl border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-                🚗 Vehicle Check-In
-            </h2>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">License Plate</label>
-                    <input
-                        className="w-full border border-gray-300 p-3 rounded-lg font-mono uppercase focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                        placeholder="ABC-123"
-                        value={formData.licensePlate}
-                        onChange={(e) => setFormData({...formData, licensePlate: e.target.value.toUpperCase()})}
-                        required
-                        disabled={loading}
-                    />
-                </div>
+    if (!formData.plate || !formData.vehicleType) {
+      alert("Please fill in all fields");
+      return;
+    }
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Type</label>
-                    <select
-                        className="w-full border border-gray-300 p-3 rounded-lg bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-                        value={formData.type}
-                        onChange={(e) => setFormData({...formData, type: e.target.value})}
-                        disabled={loading}
-                    >
-                        <option value="CAR">Car</option>
-                        <option value="MOTORCYCLE">Motorcycle</option>
-                        <option value="VAN">Van</option>
-                    </select>
-                </div>
+    setLoading(true);
+    setError(null);
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className={`w-full py-3 rounded-lg font-bold text-white transition-all flex justify-center items-center gap-2 ${
-                        loading ? 'bg-indigo-400 cursor-wait' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-95'
-                    }`}
-                >
-                    {loading ? (
-                        <>
-                            <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Processing...
-                        </>
-                    ) : 'Register Entry'}
-                </button>
-            </form>
+    try {
+      // THIS IS THE CRITICAL PART
+      // We take 'plate' from the form and rename it to 'licensePlate' for the Backend
+      const requestData = {
+        licensePlate: formData.plate,
+        vehicleType: formData.vehicleType
+      };
 
-            {status.message && (
-                <div className={`mt-6 p-4 rounded-lg border text-sm font-medium animate-fade-in ${
-                    status.type === 'success' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'
-                }`}>
-                    {status.message}
-                </div>
-            )}
+      console.log("SENDING TO BACKEND:", requestData);
+
+      await checkIn(requestData);
+
+      alert("Vehicle registered successfully!");
+      setFormData({ plate: '', vehicleType: vehicleTypes[0] || '' });
+
+    } catch (err) {
+      console.error("Full Error Object:", err);
+      // This shows the "License plate is mandatory" message from your @NotBlank validation
+      const backendMessage = err.response?.data?.message || "Error connecting to server";
+      setError(backendMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Vehicle Check-In V2</h2>
+
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
         </div>
-    );
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            License Plate V2
+          </label>
+          <input
+            type="text"
+            className="w-full px-4 py-2 border rounded-md outline-none transition uppercase"
+            placeholder="ABC-123"
+            value={formData.plate}
+            onChange={(e) => setFormData({ ...formData, plate: e.target.value.toUpperCase() })}
+            required
+            disabled={loading}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Vehicle Type
+          </label>
+          <select
+            className="w-full px-4 py-2 border rounded-md outline-none transition"
+            value={formData.vehicleType}
+            onChange={(e) => setFormData({ ...formData, vehicleType: e.target.value })}
+            required
+            disabled={loading}
+          >
+            {vehicleTypes.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full py-3 px-4 rounded-md text-white font-semibold transition ${
+            loading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'
+          }`}
+        >
+          {loading ? 'Processing...' : 'Register Entry'}
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default CheckInPage;

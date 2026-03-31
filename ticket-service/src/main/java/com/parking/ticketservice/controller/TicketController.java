@@ -11,7 +11,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/tickets")
@@ -41,5 +44,13 @@ public class TicketController {
     @PreAuthorize("hasRole('PARKING_USER')") // Only users with this role can get here
     public String testSecurity() {
         return "If you see this, the TokenRelay worked! Hello from Ticket-Service.";
+    }
+
+    @GetMapping("/vehicle-types")
+    public ResponseEntity<List<String>> getVehicleTypes() {
+        List<String> types = Stream.of(VehicleType.values())
+                .map(Enum::name)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(types);
     }
 }

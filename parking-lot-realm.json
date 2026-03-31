@@ -1,0 +1,44 @@
+{
+  "realm": "parking-lot",
+  "enabled": true,
+  "roles": {
+    "realm": [ { "name": "PARKING_USER" } ]
+  },
+  "clients": [
+    {
+      "clientId": "parking-lot-client",
+      "name": "Parking Lot BFF",
+      "enabled": true,
+      "publicClient": false,
+      "secret": "Yn1LstkIp4Inb2kenvOF8bN7369GZpR8",
+      "redirectUris": [ "http://localhost:8000/*", "http://localhost:8083/*" ],
+      "webOrigins": [ "http://localhost:3000" ],
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "defaultClientScopes": [ "web-origins", "roles", "profile", "email" ]
+    }
+  ],
+  "users": [
+    {
+      "username": "fredo",
+      "enabled": true,
+      "email": "fredo@example.com",
+      "firstName": "Fredo",
+      "lastName": "User",
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "password123", "temporary": false }
+      ],
+      "realmRoles": [ "PARKING_USER" ],
+      "requiredActions": []
+    }
+  ],
+  "requiredActions": [
+    { "alias": "CONFIGURE_TOTP", "enabled": false, "defaultAction": false },
+    { "alias": "UPDATE_PASSWORD", "enabled": false, "defaultAction": false },
+    { "alias": "UPDATE_PROFILE", "enabled": false, "defaultAction": false },
+    { "alias": "VERIFY_EMAIL", "enabled": false, "defaultAction": false },
+    { "alias": "delete_account", "enabled": false, "defaultAction": false },
+    { "alias": "update_user_locale", "enabled": false, "defaultAction": false }
+  ]
+}

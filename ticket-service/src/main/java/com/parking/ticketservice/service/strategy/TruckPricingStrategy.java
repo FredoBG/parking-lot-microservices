@@ -10,12 +10,12 @@ import org.springframework.stereotype.Component;
 public class TruckPricingStrategy implements PricingStrategy {
 
     // Note the path matches your new YAML structure
-    @Value("${parking.hourlyRates.truck:5.0}")
+    @Value("${parking.hourlyRates.truck:8.0}")
     private double truckRate;
 
     @Override
     public VehicleType getVehicleType() {
-        return VehicleType.CAR;
+        return VehicleType.TRUCK;
     }
 
     @Override

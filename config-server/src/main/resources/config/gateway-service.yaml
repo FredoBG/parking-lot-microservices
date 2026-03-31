@@ -6,26 +6,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          # ADD THE ISSUER HERE
           issuer-uri: http://localhost:8080/realms/parking-lot
-          # The Gateway downloads the public keys from here to verify Fredo's token
           jwk-set-uri: http://localhost:8080/realms/parking-lot/protocol/openid-connect/certs
   cloud:
     gateway:
       httpclient:
         connect-timeout: 5000  # Time to establish connection
         response-timeout: 5s   # Time to wait for the data
-      # This tells the gateway to be flexible with case when talking to Eureka
-      discovery:
-        locator:
-          lower-case-service-id: true
       routes:
-        # Route for the React App to talk to the BFF
-        - id: bff-route
-          uri: lb://bff-service
-          predicates:
-            - Path=/api/parking/**
-
         # Route for direct Ticket access with Resilience
         - id: ticket-service-route
           uri: lb://ticket-service
@@ -37,6 +25,10 @@ spring:
                 name: ticketServiceCircuitBreaker
                 # This must point to a controller inside the Gateway project
                 fallbackUri: forward:/fallback/ticket-service
+      # This tells the gateway to be flexible with case when talking to Eureka
+      discovery:
+        locator:
+          lower-case-service-id: true
 
 logging:
   level:
